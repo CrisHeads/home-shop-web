@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<f:view renderKitId="PRIMEFACES_MOBILE" />
+
+<h:head>
+
+</h:head>
+
+<h:body>
+
+	<pm:page id="first">
+		<pm:header title="Pedido"></pm:header>
+
+		<pm:content>
+			<h:form>
+				<p:growl id="msg" showDetail="true" autoUpdate="true" />
+				<pm:field>
+					<p:autoComplete id="advanced" queryDelay="1000"
+						value="#{pedidoView.itemSelected}"
+						completeMethod="#{pedidoView.completeItem}" var="item"
+						itemLabel="#{item.nombre}" itemValue="#{item}"
+						converter="itemConverter" panelStyleClass="ui-themes">
+						<p:ajax event="itemSelect"
+							listener="#{pedidoView.onItemPedidoSelect}"
+							update="gridItemsPedido" />
+
+					</p:autoComplete>
+				</pm:field>
+
+				<p:dataGrid id="gridItemsPedido" var="item"
+					value="#{pedidoView.itemsPedido}" paginator="true" rows="2"
+					columns="2">
+					<f:facet name="header">Su lista</f:facet>
+					<p:panel header="#{item.nombre}">
+						<h:panelGrid columns="1" style="width:100%">
+							<p:graphicImage name="imagen/pollo2.jpg" />
+							<h:outputText value="#{item.tipo.nombre}" />
+
+							<p:commandButton update="@form:itemDetail"
+								oncomplete="PF('itemDialog').show()" icon="ui-icon-search"
+								styleClass="ui-btn-inline">
+								<h:outputText styleClass="ui-icon ui-icon-search"
+									style="margin:0 auto;" />
+								<f:setPropertyActionListener value="#{item}"
+									target="#{pedidoView.itemSelected}" />
+							</p:commandButton>
+						</h:panelGrid>
+
+					</p:panel>
+
+				</p:dataGrid>
+
+
+				<p:dialog header="Item info" widgetVar="itemDialog" modal="true"
+					responsive="true" showEffect="fade" hideEffect="fade"
+					resizable="false">
+					<p:outputPanel id="itemDetail">
+						<p:panelGrid columns="2"
+							rendered="#{not empty pedidoView.itemSelected}">
+							<f:facet name="header">
+								<p:graphicImage name="imagen/carne-pollo.jpg" />
+							</f:facet>
+
+							<h:outputText value="Id:" />
+							<h:outputText value="#{pedidoView.itemSelected.id}" />
+
+							<h:outputText value="Nombre" />
+							<h:outputText value="#{pedidoView.itemSelected.nombre}" />
+
+							<h:outputText value="Tipo:" />
+							<h:outputText value="#{pedidoView.itemSelected.tipo.nombre}" />
+
+							<h:outputText value="Unidad" />
+							<h:outputText
+								value="#{pedidoView.itemSelected.unidadMedida.simbolo}" />
+						</p:panelGrid>
+					</p:outputPanel>
+
+				</p:dialog>
+
+
+			</h:form>
+		</pm:content>
+	</pm:page>
+
+	<pm:page id="second">
+		<pm:header title="Page 2"></pm:header>
+
+		<pm:content>
+			<p>Page 2 content.</p>
+			<p:button outcome="pm:first" value="Go Back" />
+		</pm:content>
+	</pm:page>
+ 
+        //more pages
+ 
+    </h:body>
+
+</html>
